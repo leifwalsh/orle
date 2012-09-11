@@ -23,10 +23,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RLE_H
-#define RLE_H
+#ifndef RLE_RLE_IO_H
+#define RLE_RLE_IO_H
 
-#include <rle/rle.h>
-#include <rle/rle-io.h>
+#include <stdio.h>
 
-#endif // RLE_H
+__attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
+int rle_encode_file(FILE * const dst, FILE * const src);
+
+__attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
+int rle_decode_file(FILE * const dst, FILE * const src);
+
+__attribute__((visibility("default"), warn_unused_result))
+int rle_encode_fd(int dst, int src);
+
+__attribute__((visibility("default"), warn_unused_result))
+int rle_decode_fd(int dst, int src);
+
+#endif // RLE_RLE_IO_H

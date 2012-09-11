@@ -28,30 +28,28 @@
 
 #include <rle.h>
 
-#include "unittest.h"
+#include "../unittest.h"
 
 int main(void) {
     unsigned char input[100];
     unsigned char enc[101];
     size_t enclen;
-    unsigned char dec[100];
-    size_t declen;
     int r;
 
-    memset(input, 'a', sizeof input);
-    input[99] = '\0';
+    for (size_t i = 0; i < (sizeof input) - 1; ++i) {
+        if (i % 2 == 0) {
+            input[i] = 'a';
+        } else {
+            input[i] = 'b';
+        }
+    }
+    input[(sizeof input) - 1] = '\0';
 
     enclen = sizeof enc;
     r = rle_encode_bytes(enc, &enclen, input, sizeof input);
     assert(!r);
-    assert(enclen <= sizeof enc);
+    expect(enclen <= sizeof enc);
+    assert(enclen <= (sizeof input) + 1);
 
-    declen = sizeof dec;
-    r = rle_decode_bytes(dec, &declen, enc, enclen);
-    assert(!r);
-    assert(declen <= sizeof dec);
-
-    assert(!strncmp((char *) input, (char *) dec, sizeof input));
-
-    return 0;
+    unittest_finish();
 }

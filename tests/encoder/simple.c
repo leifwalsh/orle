@@ -23,10 +23,35 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RLE_H
-#define RLE_H
+#include <stddef.h>
+#include <string.h>
 
-#include <rle/rle.h>
-#include <rle/rle-io.h>
+#include <rle.h>
 
-#endif // RLE_H
+#include "../unittest.h"
+
+int main(void) {
+    unsigned char input[100];
+    unsigned char enc[101];
+    size_t enclen;
+    unsigned char dec[100];
+    size_t declen;
+    int r;
+
+    memset(input, 'a', sizeof input);
+    input[99] = '\0';
+
+    enclen = sizeof enc;
+    r = rle_encode_bytes(enc, &enclen, input, sizeof input);
+    assert(!r);
+    assert(enclen <= sizeof enc);
+
+    declen = sizeof dec;
+    r = rle_decode_bytes(dec, &declen, enc, enclen);
+    assert(!r);
+    assert(declen <= sizeof dec);
+
+    assert(!strncmp((char *) input, (char *) dec, sizeof input));
+
+    unittest_finish();
+}

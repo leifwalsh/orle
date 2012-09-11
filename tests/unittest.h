@@ -26,10 +26,39 @@
 #ifndef RLE_TESTS_UNITTEST_H
 #define RLE_TESTS_UNITTEST_H
 
-#undef NDEBUG
+#include <errno.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sysexits.h>
 
-#include <assert.h>
+#define expect(cond) do {                                               \
+        if (!(cond)) {                                                  \
+            int errsv = errno;                                          \
+            fprintf(stderr, "%s:%d: %s: Expectation failed: `" #cond "'\n", __FILE__, __LINE__, __func__); \
+            errno = errsv;                                              \
+            exit(EX_SOFTWARE);                                          \
+        }                                                               \
+    } while (0)
 
-#define expect(c) assert(c)
+static bool test_is_passing = true;
+
+#define assert(cond) do {                                               \
+        if (!(cond)) {                                                  \
+            int errsv = errno;                                          \
+            fprintf(stderr, "%s:%d: %s: Assertion failed: `" #cond "'\n", __FILE__, __LINE__, __func__); \
+            errno = errsv;                                              \
+            test_is_passing = false;                                    \
+        }                                                               \
+    } while (0)
+
+__attribute__((noreturn))
+static void unittest_finish(void) {
+    if (test_is_passing) {
+        exit(EXIT_SUCCESS);
+    } else {
+        exit(EX_SOFTWARE);
+    }
+}
 
 #endif // RLE_TESTS_UNITTEST_H

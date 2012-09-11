@@ -1,5 +1,18 @@
 2012-09-11  Leif Walsh  <leif.walsh@gmail.com>
 
+	* tests/unittest.h: rewrote unittest framework to collect
+	assertions
+
+	* tests/: moved tests into subsystem subdirs, added useless io
+	test
+
+	* rle/rle-io.c (rle_encode_fd): wrote file descriptor wrapper
+	(rle_decode_fd): wrote file descriptor wrapper
+	(rle_encode_file): wrote ineffective file encoder/decoder
+	(rle_decode_file): wrote ineffective file encoder/decoder
+
+	* rle/rle-io.h: added file io API
+
 	* tests/simple.c (main): allow for slight growth in bad cases
 
 	* tests/easy.c (main): allow for slight growth in bad cases

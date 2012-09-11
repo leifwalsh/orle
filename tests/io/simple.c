@@ -28,21 +28,9 @@
 
 #include <rle.h>
 
-#include "unittest.h"
+#include "../unittest.h"
 
 int main(void) {
-    unsigned char input[100];
-    unsigned char enc[101];
-    size_t enclen;
-    int r;
-
-    memset(input, 'a', sizeof input);
-    input[99] = '\0';
-
-    enclen = sizeof enc;
-    r = rle_encode_bytes(enc, &enclen, input, sizeof input);
-    expect(!r);
-    assert(enclen < sizeof input);
-
-    return 0;
+    assert(false);
+    unittest_finish();
 }

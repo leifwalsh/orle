@@ -26,31 +26,38 @@
 AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
-AM_CPPFLAGS = -D_FORTIFY_SOURCE=2 -D_BSD_SOURCE -D_ISO_C11_SOURCE -D_FILE_OFFSET_BITS=64
+AM_CPPFLAGS = -D_FORTIFY_SOURCE=2 -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -D_ISO_C11_SOURCE -D_FILE_OFFSET_BITS=64
 AM_CFLAGS = -Wall -Werror -Wextra -std=c11
 AM_LDFLAGS = -std=c11
 
 lib_LTLIBRARIES = librle-@RLE_API_VERSION@.la
-librle_@RLE_API_VERSION@_la_SOURCES = rle/rle.c rle/rle-debug.c
+librle_@RLE_API_VERSION@_la_SOURCES = rle/rle.c rle/rle-io.c rle/rle-debug.c
 librle_@RLE_API_VERSION@_la_CFLAGS = $(AM_CFLAGS) -fvisibility=hidden
 librle_@RLE_API_VERSION@_la_LDFLAGS = $(AM_LDFLAGS) -fvisibility=hidden -version-info $(RLE_SO_VERSION)
 rle_includedir = $(includedir)/rle-$(RLE_API_VERSION)
-nobase_rle_include_HEADERS = rle.h rle/rle.h
+nobase_rle_include_HEADERS = rle.h rle/rle.h rle/rle-io.h
 rle_libincludedir = $(libdir)/rle-$(RLE_API_VERSION)/include
 nodist_rle_libinclude_HEADERS = rleconfig.h
 
-check_PROGRAMS = tests/easy tests/osc tests/simple
+check_PROGRAMS = tests/encoder/easy \
+                 tests/encoder/osc \
+                 tests/encoder/simple \
+                 tests/io/simple
 
-tests_easy_SOURCES = tests/easy.c
-tests_easy_LDADD = librle-@RLE_API_VERSION@.la
-tests_easy_LDFLAGS = $(AM_LDFLAGS) -no-install
+tests_encoder_easy_SOURCES = tests/encoder/easy.c
+tests_encoder_easy_LDADD = librle-@RLE_API_VERSION@.la
+tests_encoder_easy_LDFLAGS = $(AM_LDFLAGS) -no-install
 
-tests_osc_SOURCES = tests/osc.c
-tests_osc_LDADD = librle-@RLE_API_VERSION@.la
-tests_osc_LDFLAGS = $(AM_LDFLAGS) -no-install
+tests_encoder_osc_SOURCES = tests/encoder/osc.c
+tests_encoder_osc_LDADD = librle-@RLE_API_VERSION@.la
+tests_encoder_osc_LDFLAGS = $(AM_LDFLAGS) -no-install
 
-tests_simple_SOURCES = tests/simple.c
-tests_simple_LDADD = librle-@RLE_API_VERSION@.la
-tests_simple_LDFLAGS = $(AM_LDFLAGS) -no-install
+tests_encoder_simple_SOURCES = tests/encoder/simple.c
+tests_encoder_simple_LDADD = librle-@RLE_API_VERSION@.la
+tests_encoder_simple_LDFLAGS = $(AM_LDFLAGS) -no-install
+
+tests_io_simple_SOURCES = tests/io/simple.c
+tests_io_simple_LDADD = librle-@RLE_API_VERSION@.la
+tests_io_simple_LDFLAGS = $(AM_LDFLAGS) -no-install
 
 TESTS = $(check_PROGRAMS)
