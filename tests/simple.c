@@ -33,23 +33,23 @@
 int main(void) {
     unsigned char input[100];
     unsigned char enc[100];
-    size_t enc_sz;
+    size_t enclen;
     unsigned char dec[100];
-    size_t dec_sz;
+    size_t declen;
     int r;
 
     memset(input, 'a', sizeof input);
     input[99] = '\0';
 
-    enc_sz = sizeof enc;
-    r = rle_encode_bytes(enc, &enc_sz, input, sizeof input);
+    enclen = sizeof enc;
+    r = rle_encode_bytes(enc, &enclen, input, sizeof input);
     assert(!r);
-    assert(enc_sz <= sizeof enc);
+    assert(enclen <= sizeof enc);
 
-    dec_sz = sizeof dec;
-    r = rle_decode_bytes(dec, &dec_sz, enc, enc_sz);
+    declen = sizeof dec;
+    r = rle_decode_bytes(dec, &declen, enc, enclen);
     assert(!r);
-    assert(dec_sz <= sizeof dec);
+    assert(declen <= sizeof dec);
 
     assert(!strncmp((char *) input, (char *) dec, sizeof input));
 

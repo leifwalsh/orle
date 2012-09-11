@@ -32,17 +32,24 @@
 
 int main(void) {
     unsigned char input[100];
-    unsigned char enc[100];
+    unsigned char enc[101];
     size_t enclen;
     int r;
 
-    memset(input, 'a', sizeof input);
-    input[99] = '\0';
+    for (size_t i = 0; i < (sizeof input) - 1; ++i) {
+        if (i % 2 == 0) {
+            input[i] = 'a';
+        } else {
+            input[i] = 'b';
+        }
+    }
+    input[(sizeof input) - 1] = '\0';
 
     enclen = sizeof enc;
     r = rle_encode_bytes(enc, &enclen, input, sizeof input);
-    expect(!r);
-    assert(enclen < sizeof input);
+    assert(!r);
+    expect(enclen <= sizeof enc);
+    assert(enclen <= (sizeof input) + 1);
 
     return 0;
 }

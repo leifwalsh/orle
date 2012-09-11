@@ -39,11 +39,15 @@ nobase_rle_include_HEADERS = rle.h rle/rle.h
 rle_libincludedir = $(libdir)/rle-$(RLE_API_VERSION)/include
 nodist_rle_libinclude_HEADERS = rleconfig.h
 
-check_PROGRAMS = tests/easy tests/simple
+check_PROGRAMS = tests/easy tests/osc tests/simple
 
 tests_easy_SOURCES = tests/easy.c
 tests_easy_LDADD = librle-@RLE_API_VERSION@.la
 tests_easy_LDFLAGS = $(AM_LDFLAGS) -no-install
+
+tests_osc_SOURCES = tests/osc.c
+tests_osc_LDADD = librle-@RLE_API_VERSION@.la
+tests_osc_LDFLAGS = $(AM_LDFLAGS) -no-install
 
 tests_simple_SOURCES = tests/simple.c
 tests_simple_LDADD = librle-@RLE_API_VERSION@.la

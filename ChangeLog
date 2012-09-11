@@ -1,5 +1,11 @@
 2012-09-11  Leif Walsh  <leif.walsh@gmail.com>
 
+	* tests/osc.c (main): wrote test to check for bad behavior
+
+	* tests/simple.c (main): change variable name
+
+	* tests/easy.c (main): change variable name
+
 	* Makefile.am (librle_@RLE_API_VERSION@_la_CFLAGS): fix flag setting
 
 	* rle/rle.c (rle_encode_bytes): Implemented simple (worst case 2n) encoder
