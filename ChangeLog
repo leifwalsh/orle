@@ -1,5 +1,15 @@
 2012-09-11  Leif Walsh  <leif.walsh@gmail.com>
 
+	* tests/simple.c (main): allow for slight growth in bad cases
+
+	* tests/easy.c (main): allow for slight growth in bad cases
+
+	* rle/rle.c (rle_encode_bytes): prevent space doubling with a
+	better algorithm
+	(rle_decode_bytes): prevent space doubling
+
+	* rle/rle-debug.h (DBG): better debug print format
+
 	* tests/osc.c (main): wrote test to check for bad behavior
 
 	* tests/simple.c (main): change variable name

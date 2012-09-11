@@ -44,21 +44,64 @@ int rle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
     int r;
     size_t srcidx = 0;
     size_t dstidx = 0;
+
+#define ENSURE_SPACE(count) do {                                        \
+        if (dstidx + (count) > *dstlen) {                              \
+            DBG("need at least %zu bytes in dst to continue\n", dstidx + (count)); \
+            r = ENOBUFS;                                                \
+            goto cleanup;                                               \
+        }                                                               \
+    } while (0)
+
     while (srcidx < srclen) {
         int8_t rl = 1;
-        while (srcidx + rl < srclen && src[srcidx + rl] == src[srcidx] && rl < INT8_MAX) {
-            ++rl;
-        }
-        if (dstidx + 2 >= *dstlen) {
-            DBG("need at least %zu bytes in dst to continue\n", dstidx + 2);
-            r = ENOBUFS;
-            goto cleanup;
+        {
+            unsigned char const *r = &src[srcidx];
+            while ((uint8_t) rl < srclen - srcidx && rl < INT8_MAX && r[rl] == r[0]) {
+                ++rl;
+            }
         }
         assert(rl > 0);
-        dst[dstidx++] = rl;
-        dst[dstidx++] = src[srcidx];
-        srcidx += rl;
+        if (rl >= 2) {
+            ENSURE_SPACE(2);
+            dst[dstidx++] = rl;
+            dst[dstidx++] = src[srcidx];
+            srcidx += rl;
+        } else {
+            int8_t cl = rl;
+            int8_t srl = 0;
+            while ((uint8_t) cl < srclen - srcidx && cl < INT8_MAX) {
+                srl = 1;
+                {
+                    unsigned char const *sr = &src[srcidx + cl];
+                    while ((uint8_t) srl < srclen - (srcidx + cl) && srl < INT8_MAX && sr[srl] == sr[0]) {
+                        ++srl;
+                    }
+                }
+                assert(srl > 0);
+                if (srl <= 2 && cl + srl <= INT8_MAX) {
+                    cl += srl;
+                    srl = 0;
+                } else {
+                    break;
+                }
+            }
+            ENSURE_SPACE(1 + cl);
+            dst[dstidx++] = -cl;
+            memcpy(&dst[dstidx], &src[srcidx], cl);
+            dstidx += cl;
+            srcidx += cl;
+            if (srl >= 2) {
+                ENSURE_SPACE(2);
+                dst[dstidx++] = srl;
+                dst[dstidx++] = src[srcidx];
+                srcidx += srl;
+            }
+        }
     }
+
+#undef ENSURE_SPACE
+
     *dstlen = dstidx;
     r = 0;
 
@@ -77,19 +120,37 @@ int rle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
 
     size_t srcidx = 0;
     size_t dstidx = 0;
+
+#define ENSURE_SPACE(count) do {                                        \
+        if (dstidx + (count) > *dstlen) {                              \
+            DBG("need at least %zu bytes in dst to continue\n", dstidx + (count)); \
+            r = ENOBUFS;                                                \
+            goto cleanup;                                               \
+        }                                                               \
+    } while (0)
+
     while (srcidx < srclen) {
         assert(srclen - srcidx >= 2);
         int8_t rl = src[srcidx++];
-        for (int8_t i = 0; i < rl; ++i) {
-            if (dstidx >= *dstlen) {
-                DBG("need at least %zu bytes in dst to continue\n", dstidx + 1);
-                r = ENOBUFS;
-                goto cleanup;
+        assert(rl != 0);
+        if (rl > 0) {
+            ENSURE_SPACE(rl);
+            for (int8_t i = 0; i < rl; ++i) {
+                dst[dstidx + i] = src[srcidx];
             }
-            dst[dstidx++] = src[srcidx];
+            ++srcidx;
+            dstidx += rl;
+        } else {
+            int8_t cl = -rl;
+            assert(cl > 0);
+            ENSURE_SPACE(cl);
+            memcpy(&dst[dstidx], &src[srcidx], cl);
+            dstidx += cl;
+            srcidx += cl;
         }
-        ++srcidx;
     }
+
+#undef ENSURE_SPACE
 
     *dstlen = srclen;
     r = 0;

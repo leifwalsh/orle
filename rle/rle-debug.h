@@ -39,7 +39,7 @@ extern int rle_debug;
 
 #define DBG(fmt, args...) do {                                          \
         if (rle_debug) {                                                \
-            fprintf(stderr, "DEBUG:%s:%d:%s: " fmt, __FILE__, __LINE__, __func__, ##args); \
+            fprintf(stderr, "%s:%d: %s: " fmt, __FILE__, __LINE__, __func__, ##args); \
         }                                                               \
     } while (0)
 

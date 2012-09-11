@@ -32,7 +32,7 @@
 
 int main(void) {
     unsigned char input[100];
-    unsigned char enc[100];
+    unsigned char enc[101];
     size_t enclen;
     int r;
 
