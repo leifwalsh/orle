@@ -25,6 +25,7 @@
 
 #include <assert.h>
 #include <errno.h>
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -33,20 +34,21 @@
 #include "rle.h"
 #include "rle-debug.h"
 
-int rle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
-                     unsigned char const * const src, size_t srclen) {
+size_t rle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
+                        unsigned char const * const src, size_t srclen) {
     DBG("enter\n");
     assert(dstlen);
     assert(*dstlen >= srclen);
 
-    int r;
     size_t srcidx = 0;
     size_t dstidx = 0;
+    int errsv = errno;
 
 #define ENSURE_SPACE(count) do {                                        \
-        if (dstidx + (count) > *dstlen) {                              \
+        assert(dstidx + (count) <= *dstlen); \
+        if (dstidx + (count) > *dstlen) {                               \
             DBG("need at least %zu bytes in dst to continue\n", dstidx + (count)); \
-            r = ENOBUFS;                                                \
+            errsv = ENOBUFS;                                            \
             goto cleanup;                                               \
         }                                                               \
     } while (0)
@@ -100,60 +102,67 @@ int rle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
 
 #undef ENSURE_SPACE
 
-    *dstlen = dstidx;
-    r = 0;
-
 cleanup:
-    DBG("return %d\n", r);
-    return r;
+    *dstlen = dstidx;
+    DBG("return %zu\n", srcidx);
+    errno = errsv;
+    return srcidx;
 }
 
-int rle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
-                     unsigned char const * const src, size_t srclen) {
+size_t rle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
+                        unsigned char const * const src, size_t srclen) {
     DBG("enter\n");
     assert(dstlen);
     assert(*dstlen >= srclen);
 
-    int r;
-
     size_t srcidx = 0;
     size_t dstidx = 0;
+    int errsv = errno;
 
+#define ENSURE_INPUT(count) do {                                        \
+        if (srcidx + (count) > srclen) {                                \
+            DBG("need at least %zu bytes in src for the next packed section\n", srcidx + (count)); \
+            errsv = ENOBUFS;                                            \
+            goto cleanup;                                               \
+        }                                                               \
+    } while (0)
 #define ENSURE_SPACE(count) do {                                        \
         if (dstidx + (count) > *dstlen) {                              \
             DBG("need at least %zu bytes in dst to continue\n", dstidx + (count)); \
-            r = ENOBUFS;                                                \
+            errsv = ENOBUFS;                                            \
             goto cleanup;                                               \
         }                                                               \
     } while (0)
 
     while (srcidx < srclen) {
-        assert(srclen - srcidx >= 2);
-        int8_t rl = src[srcidx++];
+        ENSURE_INPUT(1);
+        int8_t rl = src[srcidx];
         assert(rl != 0);
         if (rl > 0) {
+            ENSURE_INPUT(2);
+            DBG("unpacking %" PRId8 " copies of %" PRIu8 " from %zu to %zu\n", rl, src[srcidx + 1], srcidx + 1, dstidx);
             ENSURE_SPACE(rl);
-            for (int8_t i = 0; i < rl; ++i) {
-                dst[dstidx + i] = src[srcidx];
-            }
-            ++srcidx;
+            memset(&dst[dstidx], src[srcidx + 1], rl);
+            srcidx += 2;
             dstidx += rl;
         } else {
             int8_t cl = -rl;
             assert(cl > 0);
+            ENSURE_INPUT(1 + cl);
+            DBG("unpacking %" PRId8 " raw bytes from %zu to %zu\n", cl, srcidx + 1, dstidx);
             ENSURE_SPACE(cl);
-            memcpy(&dst[dstidx], &src[srcidx], cl);
+            memcpy(&dst[dstidx], &src[srcidx + 1], cl);
+            srcidx += 1 + cl;
             dstidx += cl;
-            srcidx += cl;
         }
     }
 
 #undef ENSURE_SPACE
-
-    *dstlen = srclen;
-    r = 0;
+#undef ENSURE_INPUT
 
 cleanup:
-    DBG("return %d\n", r);
-    return r;
+    *dstlen = dstidx;
+    DBG("return %zu\n", srcidx);
+    errno = errsv;
+    return srcidx;
 }

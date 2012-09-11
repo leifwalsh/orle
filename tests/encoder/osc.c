@@ -34,7 +34,7 @@ int main(void) {
     unsigned char input[100];
     unsigned char enc[101];
     size_t enclen;
-    int r;
+    size_t r;
 
     for (size_t i = 0; i < (sizeof input) - 1; ++i) {
         if (i % 2 == 0) {
@@ -47,7 +47,7 @@ int main(void) {
 
     enclen = sizeof enc;
     r = rle_encode_bytes(enc, &enclen, input, sizeof input);
-    assert(!r);
+    assert(r == sizeof input);
     expect(enclen <= sizeof enc);
     assert(enclen <= (sizeof input) + 1);
 

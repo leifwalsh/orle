@@ -24,13 +24,60 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <rle.h>
 
 #include "../unittest.h"
 
 int main(void) {
-    assert(false);
+    int r;
+    FILE *srcf = fopen("/tmp/rle-io-simple.src", "w");
+    expect(srcf);
+    const size_t pagesize = sysconf(_SC_PAGESIZE);
+    char buf[pagesize];
+    for (size_t fsize = 0; fsize < (1 << 22); fsize += pagesize) {
+        if ((fsize / pagesize) % 2 == 0) {
+            memset(buf, 0, pagesize);
+        } else {
+            uint32_t *intbuf = (uint32_t *) buf;
+            for (size_t i = 0; i < pagesize / sizeof(uint32_t); ++i) {
+                intbuf[i] = random();
+            }
+        }
+        size_t wrote = fwrite(buf, 1, pagesize, srcf);
+        expect(wrote == pagesize);
+    }
+    r = fclose(srcf);
+    expect(!r);
+
+    srcf = fopen("/tmp/rle-io-simple.src", "r");
+    expect(srcf);
+    FILE *encf = fopen("/tmp/rle-io-simple.enc", "w");
+    expect(encf);
+    r = rle_encode_file(encf, srcf);
+    assert(!r);
+    r = fclose(srcf);
+    expect(!r);
+    r = fclose(encf);
+    expect(!r);
+
+    encf = fopen("/tmp/rle-io-simple.enc", "r");
+    expect(encf);
+    FILE *decf = fopen("/tmp/rle-io-simple.dec", "w");
+    expect(decf);
+    r = rle_decode_file(decf, encf);
+    assert(!r);
+    r = fclose(encf);
+    expect(!r);
+    r = fclose(decf);
+    expect(!r);
+
+    r = system("diff -q /tmp/rle-io-simple.src /tmp/rle-io-simple.dec");
+    assert(!r);
+
     unittest_finish();
 }

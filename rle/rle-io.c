@@ -27,6 +27,8 @@
 #include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "rle.h"
@@ -34,15 +36,115 @@
 #include "rle-io.h"
 
 int rle_encode_file(FILE * const dst, FILE * const src) {
+    DBG("enter\n");
     assert(dst);
     assert(src);
-    return ENOTSUP;
+
+    int r;
+    const size_t pagesize = sysconf(_SC_PAGESIZE);
+    const size_t encbuflen = rle_encode_size_bound(pagesize);
+    {
+        unsigned char decbuf[pagesize];
+        unsigned char encbuf[encbuflen];
+        size_t readlen;
+        while ((readlen = fread(decbuf, 1, pagesize, src)) > 0) {
+            if (readlen < pagesize) {
+                if ((r = ferror(src))) {
+                    errno = r;
+                    perror("rle_encode_file: fread");
+                    goto exit;
+                }
+            }
+            size_t enclen = rle_encode_size_bound(readlen);
+            size_t encoded = rle_encode_bytes(encbuf, &enclen, decbuf, readlen);
+            if (encoded < readlen) {
+                perror("rle_encode_file: rle_encode_bytes");
+                r = -1;
+                goto exit;
+            }
+            size_t writelen = fwrite(encbuf, 1, enclen, dst);
+            if (writelen < enclen) {
+                r = ferror(dst);
+                assert(r);
+                errno = r;
+                perror("rle_encode_file: fwrite");
+                goto exit;
+            }
+        }
+        assert(readlen == 0);
+        assert(feof(src));
+        r = 0;
+    }
+
+exit:
+    DBG("return %d\n", r);
+    return r;
 }
 
 int rle_decode_file(FILE * const dst, FILE * const src) {
+    DBG("enter\n");
     assert(dst);
     assert(src);
-    return ENOTSUP;
+
+    int r;
+    const size_t pagesize = sysconf(_SC_PAGESIZE);
+    {
+        unsigned char encbuf[pagesize];
+        unsigned char decbuf[pagesize];
+        size_t readlen;
+        size_t leftover = 0;
+        while ((readlen = fread(&encbuf[leftover], 1, pagesize - leftover, src)) > 0) {
+            if (readlen < pagesize - leftover) {
+                if ((r = ferror(src))) {
+                    errno = r;
+                    perror("rle_decode_file: fread");
+                    goto exit;
+                }
+            }
+            size_t enclen = readlen + leftover;
+            leftover = 0;
+            DBG("decoding chunk of %zu...\n", enclen);
+            size_t decoded_total = 0;
+            while (decoded_total < enclen) {
+                DBG("decoded %zu/%zu\n", decoded_total, enclen);
+                size_t decoded;
+                size_t declen = pagesize;
+                decoded = rle_decode_bytes(decbuf, &declen,
+                                           &encbuf[decoded_total], enclen - decoded_total);
+                assert(declen <= pagesize);
+                if (decoded < enclen - decoded_total) {
+                    if (errno != ENOBUFS) {
+                        perror("rle_decode_file: rle_decode_bytes");
+                        r = -1;
+                        goto exit;
+                    }
+                }
+                if (decoded == 0) {
+                    memmove(&encbuf[0], &encbuf[decoded_total], enclen - decoded_total);
+                    leftover = enclen - decoded_total;
+                    break;
+                }
+
+                size_t writelen = fwrite(decbuf, 1, declen, dst);
+                if (writelen < declen) {
+                    r = ferror(dst);
+                    assert(r);
+                    errno = r;
+                    perror("rle_decode_file: fwrite");
+                    goto exit;
+                }
+
+                decoded_total += decoded;
+            }
+        }
+        assert(readlen == 0);
+        assert(feof(src));
+        r = 0;
+    }
+
+exit:
+    DBG("return %d\n", r);
+    return r;
 }
 
 __attribute__((warn_unused_result, nonnull(3,4)))

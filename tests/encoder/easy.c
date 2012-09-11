@@ -34,14 +34,14 @@ int main(void) {
     unsigned char input[100];
     unsigned char enc[101];
     size_t enclen;
-    int r;
+    size_t r;
 
     memset(input, 'a', sizeof input);
     input[99] = '\0';
 
     enclen = sizeof enc;
     r = rle_encode_bytes(enc, &enclen, input, sizeof input);
-    expect(!r);
+    expect(r == sizeof input);
     assert(enclen < sizeof input);
 
     unittest_finish();

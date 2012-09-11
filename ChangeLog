@@ -1,5 +1,17 @@
 2012-09-11  Leif Walsh  <leif.walsh@gmail.com>
 
+	* tests/io/simple.c (main): wrote simple file io test
+
+	* rle/rle.c (rle_decode_bytes): changed API to be easier to use,
+	also better error checking
+
+	* rle/rle.h: changed API to be easier to use (streaming)
+
+	* rle/rle-io.c (rle_encode_file): implemented file encode/decode
+	(rle_decode_file): implemented file encode/decode
+
+	* rle/rle.h (rle_encode_size_bound): add size bound calculator
+
 	* tests/unittest.h: rewrote unittest framework to collect
 	assertions
 
