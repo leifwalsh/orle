@@ -29,11 +29,11 @@
 #include <stddef.h>
 
 __attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
-int rle_encode_bytes(unsigned char * const dst, size_t * const dst_sz,
-                     unsigned char const * const src, size_t src_sz);
+int rle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
+                     unsigned char const * const src, size_t srclen);
 
 __attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
-int rle_decode_bytes(unsigned char * const dst, size_t * const dst_sz,
-                     unsigned char const * const src, size_t src_sz);
+int rle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
+                     unsigned char const * const src, size_t srclen);
 
 #endif // RLE_RLE_H

@@ -24,6 +24,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assert.h>
+#include <errno.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -32,24 +35,66 @@
 #include "rle.h"
 #include "rle-debug.h"
 
-int rle_encode_bytes(unsigned char * const dst, size_t * const dst_sz,
-                     unsigned char const * const src, size_t src_sz) {
+int rle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
+                     unsigned char const * const src, size_t srclen) {
     DBG("enter\n");
-    assert(dst_sz);
-    assert(*dst_sz >= src_sz);
-    memcpy(dst, src, src_sz);
-    *dst_sz = src_sz;
-    DBG("return %d\n", 0);
-    return 0;
+    assert(dstlen);
+    assert(*dstlen >= srclen);
+
+    int r;
+    size_t srcidx = 0;
+    size_t dstidx = 0;
+    while (srcidx < srclen) {
+        int8_t rl = 1;
+        while (srcidx + rl < srclen && src[srcidx + rl] == src[srcidx] && rl < INT8_MAX) {
+            ++rl;
+        }
+        if (dstidx + 2 >= *dstlen) {
+            DBG("need at least %zu bytes in dst to continue\n", dstidx + 2);
+            r = ENOBUFS;
+            goto cleanup;
+        }
+        assert(rl > 0);
+        dst[dstidx++] = rl;
+        dst[dstidx++] = src[srcidx];
+        srcidx += rl;
+    }
+    *dstlen = dstidx;
+    r = 0;
+
+cleanup:
+    DBG("return %d\n", r);
+    return r;
 }
 
-int rle_decode_bytes(unsigned char * const dst, size_t * const dst_sz,
-                     unsigned char const * const src, size_t src_sz) {
+int rle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
+                     unsigned char const * const src, size_t srclen) {
     DBG("enter\n");
-    assert(dst_sz);
-    assert(*dst_sz >= src_sz);
-    memcpy(dst, src, src_sz);
-    *dst_sz = src_sz;
-    DBG("return %d\n", 0);
-    return 0;
+    assert(dstlen);
+    assert(*dstlen >= srclen);
+
+    int r;
+
+    size_t srcidx = 0;
+    size_t dstidx = 0;
+    while (srcidx < srclen) {
+        assert(srclen - srcidx >= 2);
+        int8_t rl = src[srcidx++];
+        for (int8_t i = 0; i < rl; ++i) {
+            if (dstidx >= *dstlen) {
+                DBG("need at least %zu bytes in dst to continue\n", dstidx + 1);
+                r = ENOBUFS;
+                goto cleanup;
+            }
+            dst[dstidx++] = src[srcidx];
+        }
+        ++srcidx;
+    }
+
+    *dstlen = srclen;
+    r = 0;
+
+cleanup:
+    DBG("return %d\n", r);
+    return r;
 }

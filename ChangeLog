@@ -1,5 +1,10 @@
 2012-09-11  Leif Walsh  <leif.walsh@gmail.com>
 
+	* Makefile.am (librle_@RLE_API_VERSION@_la_CFLAGS): fix flag setting
+
+	* rle/rle.c (rle_encode_bytes): Implemented simple (worst case 2n) encoder
+	(rle_decode_bytes): Implemented simple decoder
+
 	* Makefile.am: set library visibility, make libtool build real
 	binaries for tests
 
