@@ -1,3 +1,14 @@
+2012-09-11  Leif Walsh  <leif.walsh@gmail.com>
+
+	* tests/simple.c (main): update old test to use unit test
+	framework
+
+	* tests/easy.c (main): create test that verifies a really easy
+	buffer does get compressed (it doesn't yet)
+
+	* tests/unittest.h (expect): create unit test framework, doesn't
+	do much yet
+
 2012-09-10  Leif Walsh  <leif.walsh@gmail.com>
 
 	* tests/simple.c (main): write first unit test

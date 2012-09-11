@@ -1,17 +1,25 @@
 # http://www.gnu.org/software/automake
 
 Makefile.in
+Makefile
 
 # http://www.gnu.org/software/autoconf
 
 /autom4te.cache
 /aclocal.m4
 /compile
+/config.h
 /config.h.in
+/config.status
 /configure
 /depcomp
 /install-sh
 /missing
+.deps/
+.libs/
+.dirstamp
+stamp-h1
+stamp-h2
 
 # libtool
 
@@ -19,13 +27,16 @@ Makefile.in
 /config.sub
 /ltmain.sh
 /ltconfig
+/libtool
 
 # Object files
 *.o
+*.lo
 
 # Libraries
 *.lib
 *.a
+*.la
 
 # Shared objects (inc. Windows DLLs)
 *.dll
@@ -37,3 +48,6 @@ Makefile.in
 *.exe
 *.out
 *.app
+
+# Generated headers
+rleconfig.h

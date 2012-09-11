@@ -34,8 +34,6 @@ int main(void) {
     unsigned char input[100];
     unsigned char enc[100];
     size_t enc_sz;
-    unsigned char dec[100];
-    size_t dec_sz;
     int r;
 
     memset(input, 'a', sizeof input);
@@ -43,15 +41,8 @@ int main(void) {
 
     enc_sz = sizeof enc;
     r = rle_encode_bytes(enc, &enc_sz, input, sizeof input);
-    assert(!r);
-    assert(enc_sz <= sizeof enc);
-
-    dec_sz = sizeof dec;
-    r = rle_decode_bytes(dec, &dec_sz, enc, enc_sz);
-    assert(!r);
-    assert(dec_sz <= sizeof dec);
-
-    assert(!strncmp((char *) input, (char *) dec, sizeof input));
+    expect(!r);
+    assert(enc_sz < sizeof input);
 
     return 0;
 }

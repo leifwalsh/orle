@@ -23,35 +23,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <stddef.h>
-#include <string.h>
+#ifndef RLE_TESTS_UNITTEST_H
+#define RLE_TESTS_UNITTEST_H
 
-#include <rle.h>
+#undef NDEBUG
 
-#include "unittest.h"
+#include <assert.h>
 
-int main(void) {
-    unsigned char input[100];
-    unsigned char enc[100];
-    size_t enc_sz;
-    unsigned char dec[100];
-    size_t dec_sz;
-    int r;
+#define expect(c) assert(c)
 
-    memset(input, 'a', sizeof input);
-    input[99] = '\0';
-
-    enc_sz = sizeof enc;
-    r = rle_encode_bytes(enc, &enc_sz, input, sizeof input);
-    assert(!r);
-    assert(enc_sz <= sizeof enc);
-
-    dec_sz = sizeof dec;
-    r = rle_decode_bytes(dec, &dec_sz, enc, enc_sz);
-    assert(!r);
-    assert(dec_sz <= sizeof dec);
-
-    assert(!strncmp((char *) input, (char *) dec, sizeof input));
-
-    return 0;
-}
+#endif // RLE_TESTS_UNITTEST_H

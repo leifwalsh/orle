@@ -38,8 +38,10 @@ nobase_rle_include_HEADERS = rle.h rle/rle.h
 rle_libincludedir = $(libdir)/rle-$(RLE_API_VERSION)/include
 nodist_rle_libinclude_HEADERS = rleconfig.h
 
-bin_PROGRAMS = tests/simple
+TESTS = tests/easy tests/simple
+bin_PROGRAMS = $(TESTS)
+
+tests_easy_SOURCES = tests/easy.c
+tests_easy_LDADD = librle-@RLE_API_VERSION@.la
 tests_simple_SOURCES = tests/simple.c
 tests_simple_LDADD = librle-@RLE_API_VERSION@.la
-
-TESTS = tests/simple
