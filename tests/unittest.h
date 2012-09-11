@@ -32,12 +32,13 @@
 #include <stdlib.h>
 #include <sysexits.h>
 
+// 99 says "epic failure" to automake
 #define expect(cond) do {                                               \
         if (!(cond)) {                                                  \
             int errsv = errno;                                          \
             fprintf(stderr, "%s:%d: %s: Expectation failed: `" #cond "'\n", __FILE__, __LINE__, __func__); \
             errno = errsv;                                              \
-            exit(EX_SOFTWARE);                                          \
+            exit(99);                                                   \
         }                                                               \
     } while (0)
 

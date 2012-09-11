@@ -1,5 +1,8 @@
 2012-09-11  Leif Walsh  <leif.walsh@gmail.com>
 
+	* tests/unittest.h (expect): use a return code that autotools
+	understands
+
 	* tests/io/simple.c (main): wrote simple file io test
 
 	* rle/rle.c (rle_decode_bytes): changed API to be easier to use,
