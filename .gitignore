@@ -15,6 +15,7 @@ Makefile
 /depcomp
 /install-sh
 /missing
+/test-driver
 .deps/
 .libs/
 .dirstamp
