@@ -32,17 +32,21 @@ AM_LDFLAGS = -std=c11
 
 lib_LTLIBRARIES = librle-@RLE_API_VERSION@.la
 librle_@RLE_API_VERSION@_la_SOURCES = rle/rle.c rle/rle-debug.c
-librle_@RLE_API_VERSION@_la_LDFLAGS = -version-info $(RLE_SO_VERSION)
+librle_@RLE_API_VERSION@_la_CFLAGS = -fvisibility=hidden
+librle_@RLE_API_VERSION@_la_LDFLAGS = -fvisibility=hidden -version-info $(RLE_SO_VERSION)
 rle_includedir = $(includedir)/rle-$(RLE_API_VERSION)
 nobase_rle_include_HEADERS = rle.h rle/rle.h
 rle_libincludedir = $(libdir)/rle-$(RLE_API_VERSION)/include
 nodist_rle_libinclude_HEADERS = rleconfig.h
 
-TESTS = tests/easy tests/simple
-bin_PROGRAMS = $(TESTS)
-check_PROGRAMS = $(TESTS)
+check_PROGRAMS = tests/easy tests/simple
 
 tests_easy_SOURCES = tests/easy.c
 tests_easy_LDADD = librle-@RLE_API_VERSION@.la
+tests_easy_LDFLAGS = -no-install
+
 tests_simple_SOURCES = tests/simple.c
 tests_simple_LDADD = librle-@RLE_API_VERSION@.la
+tests_simple_LDFLAGS = -no-install
+
+TESTS = $(check_PROGRAMS)
