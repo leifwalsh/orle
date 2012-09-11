@@ -40,6 +40,7 @@ nodist_rle_libinclude_HEADERS = rleconfig.h
 
 TESTS = tests/easy tests/simple
 bin_PROGRAMS = $(TESTS)
+check_PROGRAMS = $(TESTS)
 
 tests_easy_SOURCES = tests/easy.c
 tests_easy_LDADD = librle-@RLE_API_VERSION@.la
