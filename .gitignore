@@ -1,0 +1,39 @@
+# http://www.gnu.org/software/automake
+
+Makefile.in
+
+# http://www.gnu.org/software/autoconf
+
+/autom4te.cache
+/aclocal.m4
+/compile
+/config.h.in
+/configure
+/depcomp
+/install-sh
+/missing
+
+# libtool
+
+/config.guess
+/config.sub
+/ltmain.sh
+/ltconfig
+
+# Object files
+*.o
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app

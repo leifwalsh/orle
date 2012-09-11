@@ -1,0 +1,18 @@
+2012-09-10  Leif Walsh  <leif.walsh@gmail.com>
+
+	* tests/simple.c (main): write first unit test
+
+	* rle/rle.c (rle_encode_bytes): create initial dummy testable functions
+	(rle_decode_bytes): create initial dummy testable functions
+
+	* rle/rle-debug.h (DBG): create debugging print functions
+	(VPR): create debugging print functions
+
+	* rle.h: create public API header
+
+	* rleconfig.h.in: create autotools build system
+
+	* configure.ac: create autotools build system
+
+	* Makefile.am: create autotools build system
+
