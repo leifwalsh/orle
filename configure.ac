@@ -23,7 +23,7 @@ dnl ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 dnl (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT([rle], [0.0.1], [leif.walsh@gmail.com], [rle], [http://github.com/adlaiff6/rle])
+AC_INIT([rle], [0.0.4], [leif.walsh@gmail.com], [rle], [http://github.com/adlaiff6/rle])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10])
 AM_SILENT_RULES([yes])

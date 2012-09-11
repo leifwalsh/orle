@@ -1,0 +1,12 @@
+rle NEWS - History of user-visible changes.		-*- outline -*-
+Copyright (c) 2012, Leif Walsh <leif.walsh@gmail.com
+
+Version alpha 0.0.4 "never4get" - 11 Sep 2012, by Leif Walsh
+
+ * Enough functionality to be worth pushing, includes tests.
+
+ * Gets expected compression on tests/io/simple (~2x).
+
+ * API is undocumented but usable if you read the code.
+
+ * In fact everything's undocumented.  Oh well.
