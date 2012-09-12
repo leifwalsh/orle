@@ -29,13 +29,13 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <rle.h>
+#include <orle.h>
 
 #include "../unittest.h"
 
 int main(void) {
     int r;
-    FILE *srcf = fopen("/tmp/rle-io-simple.src", "w");
+    FILE *srcf = fopen("/tmp/orle-io-simple.src", "w");
     expect(srcf);
     const size_t pagesize = sysconf(_SC_PAGESIZE);
     char buf[pagesize];
@@ -54,29 +54,29 @@ int main(void) {
     r = fclose(srcf);
     expect(!r);
 
-    srcf = fopen("/tmp/rle-io-simple.src", "r");
+    srcf = fopen("/tmp/orle-io-simple.src", "r");
     expect(srcf);
-    FILE *encf = fopen("/tmp/rle-io-simple.enc", "w");
+    FILE *encf = fopen("/tmp/orle-io-simple.enc", "w");
     expect(encf);
-    r = rle_encode_file(encf, srcf);
+    r = orle_encode_file(encf, srcf);
     assert(!r);
     r = fclose(srcf);
     expect(!r);
     r = fclose(encf);
     expect(!r);
 
-    encf = fopen("/tmp/rle-io-simple.enc", "r");
+    encf = fopen("/tmp/orle-io-simple.enc", "r");
     expect(encf);
-    FILE *decf = fopen("/tmp/rle-io-simple.dec", "w");
+    FILE *decf = fopen("/tmp/orle-io-simple.dec", "w");
     expect(decf);
-    r = rle_decode_file(decf, encf);
+    r = orle_decode_file(decf, encf);
     assert(!r);
     r = fclose(encf);
     expect(!r);
     r = fclose(decf);
     expect(!r);
 
-    r = system("diff -q /tmp/rle-io-simple.src /tmp/rle-io-simple.dec");
+    r = system("diff -q /tmp/orle-io-simple.src /tmp/orle-io-simple.dec");
     assert(!r);
 
     unittest_finish();

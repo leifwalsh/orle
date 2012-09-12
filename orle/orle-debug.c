@@ -23,10 +23,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RLE_H
-#define RLE_H
+#include "config.h"
+#include "orle-debug.h"
 
-#include <rle/rle.h>
-#include <rle/rle-io.h>
-
-#endif // RLE_H
+int orle_verbose = 0;
+int orle_debug = 0;

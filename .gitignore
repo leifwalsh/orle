@@ -39,7 +39,7 @@ stamp-h2
 *.gcda
 cov/
 /all.info
-/rle.info
+/orle.info
 
 # Libraries
 *.lib
@@ -58,4 +58,4 @@ cov/
 *.app
 
 # Generated headers
-rleconfig.h
+orleconfig.h

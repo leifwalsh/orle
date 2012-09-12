@@ -23,23 +23,23 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RLE_RLE_H
-#define RLE_RLE_H
+#ifndef ORLE_ORLE_H
+#define ORLE_ORLE_H
 
 #include <stddef.h>
 #include <stdint.h>
 
 __attribute__((visibility("default"), always_inline, const))
-inline size_t rle_encode_size_bound(size_t len) {
+inline size_t orle_encode_size_bound(size_t len) {
     return len + (len + INT8_MAX - 1) / INT8_MAX;
 }
 
 __attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
-size_t rle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
+size_t orle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
                         unsigned char const * const src, size_t srclen);
 
 __attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
-size_t rle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
+size_t orle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
                         unsigned char const * const src, size_t srclen);
 
-#endif // RLE_RLE_H
+#endif // ORLE_ORLE_H

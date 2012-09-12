@@ -23,24 +23,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RLE_RLE_DEBUG_H
-#define RLE_RLE_DEBUG_H
+#ifndef ORLE_H
+#define ORLE_H
 
-#include <stdio.h>
+#include <orle/orle.h>
+#include <orle/orle-io.h>
 
-extern int rle_verbose;
-extern int rle_debug;
-
-#define VPR(fmt, args...) do {                  \
-        if (rle_verbose) {                      \
-            fprintf(stdout, fmt, ##args);       \
-        }                                       \
-    } while (0)
-
-#define DBG(fmt, args...) do {                                          \
-        if (rle_debug) {                                                \
-            fprintf(stderr, "%s:%d: %s: " fmt, __FILE__, __LINE__, __func__, ##args); \
-        }                                                               \
-    } while (0)
-
-#endif // RLE_RLE_DEBUG_H
+#endif // ORLE_H

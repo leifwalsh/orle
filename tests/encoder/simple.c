@@ -26,7 +26,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include <rle.h>
+#include <orle.h>
 
 #include "../unittest.h"
 
@@ -42,12 +42,12 @@ int main(void) {
     input[99] = '\0';
 
     enclen = sizeof enc;
-    r = rle_encode_bytes(enc, &enclen, input, sizeof input);
+    r = orle_encode_bytes(enc, &enclen, input, sizeof input);
     assert(r == sizeof input);
     assert(enclen <= sizeof enc);
 
     declen = sizeof dec;
-    r = rle_decode_bytes(dec, &declen, enc, enclen);
+    r = orle_decode_bytes(dec, &declen, enc, enclen);
     assert(r == enclen);
     assert(declen <= sizeof dec);
 

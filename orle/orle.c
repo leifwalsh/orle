@@ -31,10 +31,10 @@
 #include <string.h>
 
 #include "config.h"
-#include "rle.h"
-#include "rle-debug.h"
+#include "orle.h"
+#include "orle-debug.h"
 
-size_t rle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
+size_t orle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
                         unsigned char const * const src, size_t srclen) {
     DBG("enter\n");
     assert(dstlen);
@@ -109,7 +109,7 @@ cleanup:
     return srcidx;
 }
 
-size_t rle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
+size_t orle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
                         unsigned char const * const src, size_t srclen) {
     DBG("enter\n");
     assert(dstlen);

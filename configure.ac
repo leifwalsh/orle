@@ -23,16 +23,16 @@ dnl ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 dnl (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT([rle], [0.0.4], [leif.walsh@gmail.com], [rle], [http://github.com/adlaiff6/rle])
+AC_INIT([orle], [0.0.4], [leif.walsh@gmail.com], [orle], [http://github.com/adlaiff6/orle])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([foreign color-tests])
 AM_SILENT_RULES([yes])
-AC_CONFIG_HEADERS([config.h rleconfig.h])
+AC_CONFIG_HEADERS([config.h orleconfig.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AM_PROG_CC_C_O
 LT_INIT()
-AC_SUBST([RLE_SO_VERSION], [1:0:0])
-AC_SUBST([RLE_API_VERSION], [1.0])
+AC_SUBST([ORLE_SO_VERSION], [1:0:0])
+AC_SUBST([ORLE_API_VERSION], [1.0])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

@@ -23,21 +23,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RLE_RLE_IO_H
-#define RLE_RLE_IO_H
+#ifndef ORLE_ORLE_DEBUG_H
+#define ORLE_ORLE_DEBUG_H
 
 #include <stdio.h>
 
-__attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
-int rle_encode_file(FILE * const dst, FILE * const src);
+extern int orle_verbose;
+extern int orle_debug;
 
-__attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
-int rle_decode_file(FILE * const dst, FILE * const src);
+#define VPR(fmt, args...) do {                  \
+        if (orle_verbose) {                      \
+            fprintf(stdout, fmt, ##args);       \
+        }                                       \
+    } while (0)
 
-__attribute__((visibility("default"), warn_unused_result))
-int rle_encode_fd(int dst, int src);
+#define DBG(fmt, args...) do {                                          \
+        if (orle_debug) {                                                \
+            fprintf(stderr, "%s:%d: %s: " fmt, __FILE__, __LINE__, __func__, ##args); \
+        }                                                               \
+    } while (0)
 
-__attribute__((visibility("default"), warn_unused_result))
-int rle_decode_fd(int dst, int src);
-
-#endif // RLE_RLE_IO_H
+#endif // ORLE_ORLE_DEBUG_H

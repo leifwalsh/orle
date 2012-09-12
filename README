@@ -1,8 +1,10 @@
-rle
----
+orle
+----
 
 Run-length encoding is a compression algorithm.  It doesn't work super
 well, but it's very simple and requires O(1) space and O(n) time for both
 compression and decompression.
 
 This is an implementation of run-length encoding.
+
+It's pronounced `ORLY?'

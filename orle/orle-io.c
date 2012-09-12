@@ -31,18 +31,18 @@
 #include <unistd.h>
 
 #include "config.h"
-#include "rle.h"
-#include "rle-debug.h"
-#include "rle-io.h"
+#include "orle.h"
+#include "orle-debug.h"
+#include "orle-io.h"
 
-int rle_encode_file(FILE * const dst, FILE * const src) {
+int orle_encode_file(FILE * const dst, FILE * const src) {
     DBG("enter\n");
     assert(dst);
     assert(src);
 
     int r;
     const size_t pagesize = sysconf(_SC_PAGESIZE);
-    const size_t encbuflen = rle_encode_size_bound(pagesize);
+    const size_t encbuflen = orle_encode_size_bound(pagesize);
     {
         unsigned char decbuf[pagesize];
         unsigned char encbuf[encbuflen];
@@ -52,15 +52,15 @@ int rle_encode_file(FILE * const dst, FILE * const src) {
                 if ((r = ferror(src))) {
                     // LCOV_EXCL_START
                     errno = r;
-                    perror("rle_encode_file: fread");
+                    perror("orle_encode_file: fread");
                     goto exit;
                 }   // LCOV_EXCL_STOP
             }
-            size_t enclen = rle_encode_size_bound(readlen);
-            size_t encoded = rle_encode_bytes(encbuf, &enclen, decbuf, readlen);
+            size_t enclen = orle_encode_size_bound(readlen);
+            size_t encoded = orle_encode_bytes(encbuf, &enclen, decbuf, readlen);
             if (encoded < readlen) {
                 // LCOV_EXCL_START
-                perror("rle_encode_file: rle_encode_bytes");
+                perror("orle_encode_file: orle_encode_bytes");
                 r = -1;
                 goto exit;
             }   // LCOV_EXCL_STOP
@@ -70,7 +70,7 @@ int rle_encode_file(FILE * const dst, FILE * const src) {
                 r = ferror(dst);
                 assert(r);
                 errno = r;
-                perror("rle_encode_file: fwrite");
+                perror("orle_encode_file: fwrite");
                 goto exit;
             }   // LCOV_EXCL_STOP
 
@@ -85,7 +85,7 @@ exit:
     return r;
 }
 
-int rle_decode_file(FILE * const dst, FILE * const src) {
+int orle_decode_file(FILE * const dst, FILE * const src) {
     DBG("enter\n");
     assert(dst);
     assert(src);
@@ -102,7 +102,7 @@ int rle_decode_file(FILE * const dst, FILE * const src) {
                 if ((r = ferror(src))) {
                     // LCOV_EXCL_START
                     errno = r;
-                    perror("rle_decode_file: fread");
+                    perror("orle_decode_file: fread");
                     goto exit;
                 }   // LCOV_EXCL_STOP
             }
@@ -114,13 +114,13 @@ int rle_decode_file(FILE * const dst, FILE * const src) {
                 DBG("decoded %zu/%zu\n", decoded_total, enclen);
                 size_t decoded;
                 size_t declen = pagesize;
-                decoded = rle_decode_bytes(decbuf, &declen,
+                decoded = orle_decode_bytes(decbuf, &declen,
                                            &encbuf[decoded_total], enclen - decoded_total);
                 assert(declen <= pagesize);
                 if (decoded < enclen - decoded_total) {
                     if (errno != ENOBUFS) {
                         // LCOV_EXCL_START
-                        perror("rle_decode_file: rle_decode_bytes");
+                        perror("orle_decode_file: orle_decode_bytes");
                         r = -1;
                         goto exit;
                     }   // LCOV_EXCL_STOP
@@ -137,7 +137,7 @@ int rle_decode_file(FILE * const dst, FILE * const src) {
                     r = ferror(dst);
                     assert(r);
                     errno = r;
-                    perror("rle_decode_file: fwrite");
+                    perror("orle_decode_file: fwrite");
                     goto exit;
                 }   // LCOV_EXCL_STOP
 
@@ -157,7 +157,7 @@ exit:
 // LCOV_EXCL_START
 __attribute__((nonnull(1)))
 static inline void dbg_perror(char const * const str) {
-    if (rle_debug) {
+    if (orle_debug) {
         perror(str);
     }
 }
@@ -243,7 +243,7 @@ static int fclose_dst_src(FILE ** const dstf, FILE ** const srcf) {
     return r;
 }
 
-int rle_encode_fd(int dst, int src) {
+int orle_encode_fd(int dst, int src) {
     int r, cr;
     FILE *dstf, *srcf;
     r = fdopen_dst_src(dst, src, &dstf, &srcf);
@@ -251,7 +251,7 @@ int rle_encode_fd(int dst, int src) {
         goto exit;
     }
 
-    r = rle_encode_file(dstf, srcf);
+    r = orle_encode_file(dstf, srcf);
 
     cr = fclose_dst_src(&dstf, &srcf);
     if (!r && cr) {
@@ -261,7 +261,7 @@ exit:
     return r;
 }
 
-int rle_decode_fd(int dst, int src) {
+int orle_decode_fd(int dst, int src) {
     int r, cr;
     FILE *dstf, *srcf;
     r = fdopen_dst_src(dst, src, &dstf, &srcf);
@@ -269,7 +269,7 @@ int rle_decode_fd(int dst, int src) {
         goto exit;
     }
 
-    r = rle_decode_file(dstf, srcf);
+    r = orle_decode_file(dstf, srcf);
 
     cr = fclose_dst_src(&dstf, &srcf);
     if (!r && cr) {

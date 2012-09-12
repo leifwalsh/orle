@@ -23,8 +23,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RLE_TESTS_UNITTEST_H
-#define RLE_TESTS_UNITTEST_H
+#ifndef ORLE_TESTS_UNITTEST_H
+#define ORLE_TESTS_UNITTEST_H
 
 #include <errno.h>
 #include <stdbool.h>
@@ -63,4 +63,4 @@ static void unittest_finish(void) {
     }
 }
 
-#endif // RLE_TESTS_UNITTEST_H
+#endif // ORLE_TESTS_UNITTEST_H

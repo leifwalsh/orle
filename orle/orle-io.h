@@ -23,8 +23,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "config.h"
-#include "rle-debug.h"
+#ifndef ORLE_ORLE_IO_H
+#define ORLE_ORLE_IO_H
 
-int rle_verbose = 0;
-int rle_debug = 0;
+#include <stdio.h>
+
+__attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
+int orle_encode_file(FILE * const dst, FILE * const src);
+
+__attribute__((visibility("default"), warn_unused_result, nonnull(1,2)))
+int orle_decode_file(FILE * const dst, FILE * const src);
+
+__attribute__((visibility("default"), warn_unused_result))
+int orle_encode_fd(int dst, int src);
+
+__attribute__((visibility("default"), warn_unused_result))
+int orle_decode_fd(int dst, int src);
+
+#endif // ORLE_ORLE_IO_H

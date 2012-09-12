@@ -32,13 +32,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <rle.h>
+#include <orle.h>
 
 #include "../unittest.h"
 
 void setup(void) {
     int r;
-    FILE *srcf = fopen("/tmp/rle-io-syscall.src", "w");
+    FILE *srcf = fopen("/tmp/orle-io-syscall.src", "w");
     expect(srcf);
     const size_t pagesize = sysconf(_SC_PAGESIZE);
     char buf[pagesize];
@@ -61,11 +61,11 @@ void setup(void) {
 void basic(void) {
     int r;
 
-    int srcfd = open("/tmp/rle-io-syscall.src", O_RDONLY);
+    int srcfd = open("/tmp/orle-io-syscall.src", O_RDONLY);
     expect(srcfd >= 0);
-    int encfd = open("/tmp/rle-io-syscall.enc", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    int encfd = open("/tmp/orle-io-syscall.enc", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     expect(encfd >= 0);
-    r = rle_encode_fd(encfd, srcfd);
+    r = orle_encode_fd(encfd, srcfd);
     assert(!r);
     struct stat srcst, encst;
     r = fstat(srcfd, &srcst);
@@ -79,18 +79,18 @@ void basic(void) {
 
     assert(encst.st_size < srcst.st_size);
 
-    encfd = open("/tmp/rle-io-syscall.enc", O_RDONLY);
+    encfd = open("/tmp/orle-io-syscall.enc", O_RDONLY);
     expect(encfd >= 0);
-    int decfd = open("/tmp/rle-io-syscall.dec", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    int decfd = open("/tmp/orle-io-syscall.dec", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     expect(decfd >= 0);
-    r = rle_decode_fd(decfd, encfd);
+    r = orle_decode_fd(decfd, encfd);
     assert(!r);
     r = close(encfd);
     expect(!r);
     r = close(decfd);
     expect(!r);
 
-    r = system("diff -q /tmp/rle-io-syscall.src /tmp/rle-io-syscall.dec");
+    r = system("diff -q /tmp/orle-io-syscall.src /tmp/orle-io-syscall.dec");
     assert(!r);
 }
 
@@ -106,28 +106,28 @@ void badenc(enum badness encbad, enum badness srcbad) {
 
     switch (srcbad) {
     case FD_IS_OK:
-        src = open("/tmp/rle-io-syscall.src", O_RDONLY);
+        src = open("/tmp/orle-io-syscall.src", O_RDONLY);
         break;
     case FD_IS_BULLSHIT:
         src = 1000;
         break;
     case FD_IS_WRONGMODE:
-        src = open("/tmp/rle-io-syscall.src", O_WRONLY);
+        src = open("/tmp/orle-io-syscall.src", O_WRONLY);
         break;
     }
     switch (encbad) {
     case FD_IS_OK:
-        enc = open("/tmp/rle-io-syscall.enc", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        enc = open("/tmp/orle-io-syscall.enc", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
         break;
     case FD_IS_BULLSHIT:
         enc = 1001;
         break;
     case FD_IS_WRONGMODE:
-        enc = open("/tmp/rle-io-syscall.enc", O_RDONLY);
+        enc = open("/tmp/orle-io-syscall.enc", O_RDONLY);
         break;
     }
 
-    r = rle_encode_fd(enc, src);
+    r = orle_encode_fd(enc, src);
     if (srcbad == FD_IS_OK && encbad == FD_IS_OK) {
         assert(!r);
     } else {
@@ -141,28 +141,28 @@ void baddec(enum badness decbad, enum badness encbad) {
 
     switch (encbad) {
     case FD_IS_OK:
-        enc = open("/tmp/rle-io-syscall.enc", O_RDONLY);
+        enc = open("/tmp/orle-io-syscall.enc", O_RDONLY);
         break;
     case FD_IS_BULLSHIT:
         enc = 1000;
         break;
     case FD_IS_WRONGMODE:
-        enc = open("/tmp/rle-io-syscall.enc", O_WRONLY);
+        enc = open("/tmp/orle-io-syscall.enc", O_WRONLY);
         break;
     }
     switch (decbad) {
     case FD_IS_OK:
-        dec = open("/tmp/rle-io-syscall.dec", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        dec = open("/tmp/orle-io-syscall.dec", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
         break;
     case FD_IS_BULLSHIT:
         dec = 1001;
         break;
     case FD_IS_WRONGMODE:
-        dec = open("/tmp/rle-io-syscall.dec", O_RDONLY);
+        dec = open("/tmp/orle-io-syscall.dec", O_RDONLY);
         break;
     }
 
-    r = rle_decode_fd(dec, enc);
+    r = orle_decode_fd(dec, enc);
     if (encbad == FD_IS_OK && decbad == FD_IS_OK) {
         assert(!r);
     } else {
