@@ -6,9 +6,9 @@
 	* configure.ac: remove parallel-tests, they make it hard to see
 	what failed
 
-	* rle/rle-io.c: add lcov annotations
+	* orle/orle-io.c: add lcov annotations
 
-	* rle/rle-io.c (fdopen_dst_src): use dup(2) before fdopen(3) to
+	* orle/orle-io.c (fdopen_dst_src): use dup(2) before fdopen(3) to
 	avoid stealing and closing callers' file descriptors
 
 	* tests/unittest.h (expect): use perror for epic failures in tests
@@ -20,15 +20,15 @@
 
 	* tests/io/simple.c (main): wrote simple file io test
 
-	* rle/rle.c (rle_decode_bytes): changed API to be easier to use,
+	* orle/orle.c (orle_decode_bytes): changed API to be easier to use,
 	also better error checking
 
-	* rle/rle.h: changed API to be easier to use (streaming)
+	* orle/orle.h: changed API to be easier to use (streaming)
 
-	* rle/rle-io.c (rle_encode_file): implemented file encode/decode
-	(rle_decode_file): implemented file encode/decode
+	* orle/orle-io.c (orle_encode_file): implemented file encode/decode
+	(orle_decode_file): implemented file encode/decode
 
-	* rle/rle.h (rle_encode_size_bound): add size bound calculator
+	* orle/orle.h (orle_encode_size_bound): add size bound calculator
 
 	* tests/unittest.h: rewrote unittest framework to collect
 	assertions
@@ -36,22 +36,22 @@
 	* tests/: moved tests into subsystem subdirs, added useless io
 	test
 
-	* rle/rle-io.c (rle_encode_fd): wrote file descriptor wrapper
-	(rle_decode_fd): wrote file descriptor wrapper
-	(rle_encode_file): wrote ineffective file encoder/decoder
-	(rle_decode_file): wrote ineffective file encoder/decoder
+	* orle/orle-io.c (orle_encode_fd): wrote file descriptor wrapper
+	(orle_decode_fd): wrote file descriptor wrapper
+	(orle_encode_file): wrote ineffective file encoder/decoder
+	(orle_decode_file): wrote ineffective file encoder/decoder
 
-	* rle/rle-io.h: added file io API
+	* orle/orle-io.h: added file io API
 
 	* tests/simple.c (main): allow for slight growth in bad cases
 
 	* tests/easy.c (main): allow for slight growth in bad cases
 
-	* rle/rle.c (rle_encode_bytes): prevent space doubling with a
+	* orle/orle.c (orle_encode_bytes): prevent space doubling with a
 	better algorithm
-	(rle_decode_bytes): prevent space doubling
+	(orle_decode_bytes): prevent space doubling
 
-	* rle/rle-debug.h (DBG): better debug print format
+	* orle/orle-debug.h (DBG): better debug print format
 
 	* tests/osc.c (main): wrote test to check for bad behavior
 
@@ -59,10 +59,10 @@
 
 	* tests/easy.c (main): change variable name
 
-	* Makefile.am (librle_@RLE_API_VERSION@_la_CFLAGS): fix flag setting
+	* Makefile.am (liborle_@ORLE_API_VERSION@_la_CFLAGS): fix flag setting
 
-	* rle/rle.c (rle_encode_bytes): Implemented simple (worst case 2n) encoder
-	(rle_decode_bytes): Implemented simple decoder
+	* orle/orle.c (orle_encode_bytes): Implemented simple (worst case 2n) encoder
+	(orle_decode_bytes): Implemented simple decoder
 
 	* Makefile.am: set library visibility, make libtool build real
 	binaries for tests
@@ -82,15 +82,15 @@
 
 	* tests/simple.c (main): write first unit test
 
-	* rle/rle.c (rle_encode_bytes): create initial dummy testable functions
-	(rle_decode_bytes): create initial dummy testable functions
+	* orle/orle.c (orle_encode_bytes): create initial dummy testable functions
+	(orle_decode_bytes): create initial dummy testable functions
 
-	* rle/rle-debug.h (DBG): create debugging print functions
+	* orle/orle-debug.h (DBG): create debugging print functions
 	(VPR): create debugging print functions
 
-	* rle.h: create public API header
+	* orle.h: create public API header
 
-	* rleconfig.h.in: create autotools build system
+	* orleconfig.h.in: create autotools build system
 
 	* configure.ac: create autotools build system
 
