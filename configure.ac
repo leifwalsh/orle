@@ -28,6 +28,7 @@ AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([foreign color-tests parallel-tests])
 AM_SILENT_RULES([yes])
 AC_CONFIG_HEADERS([config.h rleconfig.h])
+AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AM_PROG_CC_C_O
 LT_INIT()
