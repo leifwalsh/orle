@@ -25,7 +25,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 AC_INIT([rle], [0.0.4], [leif.walsh@gmail.com], [rle], [http://github.com/adlaiff6/rle])
 AC_PREREQ([2.59])
-AM_INIT_AUTOMAKE([foreign color-tests parallel-tests])
+AM_INIT_AUTOMAKE([foreign color-tests])
 AM_SILENT_RULES([yes])
 AC_CONFIG_HEADERS([config.h rleconfig.h])
 AC_CONFIG_MACRO_DIR([m4])

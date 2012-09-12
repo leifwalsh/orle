@@ -50,26 +50,30 @@ int rle_encode_file(FILE * const dst, FILE * const src) {
         while ((readlen = fread(decbuf, 1, pagesize, src)) > 0) {
             if (readlen < pagesize) {
                 if ((r = ferror(src))) {
+                    // LCOV_EXCL_START
                     errno = r;
                     perror("rle_encode_file: fread");
                     goto exit;
-                }
+                }   // LCOV_EXCL_STOP
             }
             size_t enclen = rle_encode_size_bound(readlen);
             size_t encoded = rle_encode_bytes(encbuf, &enclen, decbuf, readlen);
             if (encoded < readlen) {
+                // LCOV_EXCL_START
                 perror("rle_encode_file: rle_encode_bytes");
                 r = -1;
                 goto exit;
-            }
+            }   // LCOV_EXCL_STOP
             size_t writelen = fwrite(encbuf, 1, enclen, dst);
             if (writelen < enclen) {
+                // LCOV_EXCL_START
                 r = ferror(dst);
                 assert(r);
                 errno = r;
                 perror("rle_encode_file: fwrite");
                 goto exit;
-            }
+            }   // LCOV_EXCL_STOP
+
         }
         assert(readlen == 0);
         assert(feof(src));
@@ -96,10 +100,11 @@ int rle_decode_file(FILE * const dst, FILE * const src) {
         while ((readlen = fread(&encbuf[leftover], 1, pagesize - leftover, src)) > 0) {
             if (readlen < pagesize - leftover) {
                 if ((r = ferror(src))) {
+                    // LCOV_EXCL_START
                     errno = r;
                     perror("rle_decode_file: fread");
                     goto exit;
-                }
+                }   // LCOV_EXCL_STOP
             }
             size_t enclen = readlen + leftover;
             leftover = 0;
@@ -114,10 +119,11 @@ int rle_decode_file(FILE * const dst, FILE * const src) {
                 assert(declen <= pagesize);
                 if (decoded < enclen - decoded_total) {
                     if (errno != ENOBUFS) {
+                        // LCOV_EXCL_START
                         perror("rle_decode_file: rle_decode_bytes");
                         r = -1;
                         goto exit;
-                    }
+                    }   // LCOV_EXCL_STOP
                 }
                 if (decoded == 0) {
                     memmove(&encbuf[0], &encbuf[decoded_total], enclen - decoded_total);
@@ -127,12 +133,13 @@ int rle_decode_file(FILE * const dst, FILE * const src) {
 
                 size_t writelen = fwrite(decbuf, 1, declen, dst);
                 if (writelen < declen) {
+                    // LCOV_EXCL_START
                     r = ferror(dst);
                     assert(r);
                     errno = r;
                     perror("rle_decode_file: fwrite");
                     goto exit;
-                }
+                }   // LCOV_EXCL_STOP
 
                 decoded_total += decoded;
             }
@@ -147,20 +154,51 @@ exit:
     return r;
 }
 
+// LCOV_EXCL_START
+__attribute__((nonnull(1)))
+static inline void dbg_perror(char const * const str) {
+    if (rle_debug) {
+        perror(str);
+    }
+}
+// LCOV_EXCL_STOP
+
 __attribute__((warn_unused_result, nonnull(3,4)))
 static int fdopen_dst_src(int dst, int src, FILE ** const dstfp, FILE ** const srcfp) {
     int r;
-    FILE *dstf = fdopen(dst, "a");
-    if (!dstf) {
+    int newdst = dup(dst);
+    if (newdst < 0) {
         r = errno;
         goto exit;
     }
-    FILE *srcf = fdopen(src, "r");
-    if (!srcf) {
+    FILE *dstf = fdopen(newdst, "a");
+    if (!dstf) {
+        r = errno;
+        int cr = close(newdst);
+        if (cr) {
+            dbg_perror("fdopen_dst_src: close"); // LCOV_EXCL_LINE
+        }
+        goto exit;
+    }
+    int newsrc = dup(src);
+    if (newsrc < 0) {
         r = errno;
         int cr = fclose(dstf);
-        if (cr && rle_debug) {
-            perror("fdopen_dst_src: failed to fclose dstf, can't express this error");
+        if (cr) {
+            dbg_perror("fdopen_dst_src: fclose"); // LCOV_EXCL_LINE
+        }
+        goto exit;
+    }
+    FILE *srcf = fdopen(newsrc, "r");
+    if (!srcf) {
+        r = errno;
+        int cr = close(newsrc);
+        if (cr) {
+            dbg_perror("fdopen_dst_src: close"); // LCOV_EXCL_LINE
+        }
+        cr = fclose(dstf);
+        if (cr) {
+            dbg_perror("fdopen_dst_src: fclose"); // LCOV_EXCL_LINE
         }
         goto exit;
     }
@@ -176,29 +214,29 @@ static int fclose_dst_src(FILE ** const dstf, FILE ** const srcf) {
     int r, r1, r2, errsv1, errsv2;
     r1 = fclose(*dstf);
     if (r1) {
-        errsv1 = errno;
+        errsv1 = errno; // LCOV_EXCL_LINE
     } else {
         *dstf = NULL;
     }
     r2 = fclose(*srcf);
     if (r2) {
-        errsv2 = errno;
+        errsv2 = errno; // LCOV_EXCL_LINE
     } else {
         *srcf = NULL;
     }
     if (r1 && r2) {
-        if (rle_debug) {
-            errno = errsv2;
-            perror("fclose_dst_src: failed to close srcf, can't express this error");
-        }
-        errno = errsv1;
-        r = r1;
-    } else if (r1) {
-        r = r1;
-        errno = errsv1;
-    } else if (r2) {
-        r = r2;
+        // LCOV_EXCL_START
         errno = errsv2;
+        dbg_perror("fclose_dst_src: failed to close srcf, can't express this error"); // LCOV_EXCL_LINE
+        errno = errsv1;
+        r = r1;
+        // LCOV_EXCL_STOP
+    } else if (r1) {
+        r = r1; // LCOV_EXCL_LINE
+        errno = errsv1; // LCOV_EXCL_LINE
+    } else if (r2) {
+        r = r2; // LCOV_EXCL_LINE
+        errno = errsv2; // LCOV_EXCL_LINE
     } else {
         r = 0;
     }
@@ -217,7 +255,7 @@ int rle_encode_fd(int dst, int src) {
 
     cr = fclose_dst_src(&dstf, &srcf);
     if (!r && cr) {
-        r = cr;
+        r = cr; // LCOV_EXCL_LINE
     }
 exit:
     return r;
@@ -235,7 +273,7 @@ int rle_decode_fd(int dst, int src) {
 
     cr = fclose_dst_src(&dstf, &srcf);
     if (!r && cr) {
-        r = cr;
+        r = cr; // LCOV_EXCL_LINE
     }
 exit:
     return r;

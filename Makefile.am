@@ -39,10 +39,9 @@ nobase_rle_include_HEADERS = rle.h rle/rle.h rle/rle-io.h
 rle_libincludedir = $(libdir)/rle-$(RLE_API_VERSION)/include
 nodist_rle_libinclude_HEADERS = rleconfig.h
 
-check_PROGRAMS = tests/encoder/easy \
-                 tests/encoder/osc \
-                 tests/encoder/simple \
-                 tests/io/simple
+check_PROGRAMS = \
+    tests/encoder/easy tests/encoder/osc tests/encoder/simple \
+    tests/io/simple tests/io/syscall
 
 tests_encoder_easy_SOURCES = tests/encoder/easy.c
 tests_encoder_easy_LDADD = librle-@RLE_API_VERSION@.la
@@ -59,6 +58,10 @@ tests_encoder_simple_LDFLAGS = $(AM_LDFLAGS) -no-install
 tests_io_simple_SOURCES = tests/io/simple.c
 tests_io_simple_LDADD = librle-@RLE_API_VERSION@.la
 tests_io_simple_LDFLAGS = $(AM_LDFLAGS) -no-install
+
+tests_io_syscall_SOURCES = tests/io/syscall.c
+tests_io_syscall_LDADD = librle-@RLE_API_VERSION@.la
+tests_io_syscall_LDFLAGS = $(AM_LDFLAGS) -no-install
 
 TESTS = $(check_PROGRAMS)
 

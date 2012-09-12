@@ -38,6 +38,7 @@
             int errsv = errno;                                          \
             fprintf(stderr, "%s:%d: %s: Expectation failed: `" #cond "'\n", __FILE__, __LINE__, __func__); \
             errno = errsv;                                              \
+            perror(__func__);                                           \
             exit(99);                                                   \
         }                                                               \
     } while (0)

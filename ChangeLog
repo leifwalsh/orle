@@ -1,3 +1,18 @@
+2012-09-12  Leif Walsh  <leif.walsh@gmail.com>
+
+	* tests/io/syscall.c (main): add syscall test, also checks
+	filesizes
+
+	* configure.ac: remove parallel-tests, they make it hard to see
+	what failed
+
+	* rle/rle-io.c: add lcov annotations
+
+	* rle/rle-io.c (fdopen_dst_src): use dup(2) before fdopen(3) to
+	avoid stealing and closing callers' file descriptors
+
+	* tests/unittest.h (expect): use perror for epic failures in tests
+
 2012-09-11  Leif Walsh  <leif.walsh@gmail.com>
 
 	* tests/unittest.h (expect): use a return code that autotools
