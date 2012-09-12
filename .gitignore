@@ -34,6 +34,13 @@ stamp-h2
 *.o
 *.lo
 
+# Coverage data
+*.gcno
+*.gcda
+cov/
+/all.info
+/rle.info
+
 # Libraries
 *.lib
 *.a

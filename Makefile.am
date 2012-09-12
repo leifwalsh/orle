@@ -61,3 +61,16 @@ tests_io_simple_LDADD = librle-@RLE_API_VERSION@.la
 tests_io_simple_LDFLAGS = $(AM_LDFLAGS) -no-install
 
 TESTS = $(check_PROGRAMS)
+
+%.gcda: %.lo
+.PHONY: all.info
+all.info: $(patsubst %.c,%.gcda,$(OBJECTS))
+	lcov -b $(abs_srcdir) -d $(abs_srcdir) -z
+	@$(MAKE) check
+	lcov -b $(abs_srcdir) -d $(abs_srcdir) -c -o $@
+rle.info: all.info
+	lcov -e $< "$(abs_srcdir)/rle/*" -o $@
+cov/index.html: rle.info
+	genhtml -p $(abs_srcdir) -o $(dir $@) $<
+coverage: cov/index.html
+.PHONY: coverage
