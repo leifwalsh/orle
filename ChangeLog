@@ -1,5 +1,7 @@
 2012-09-17  Leif Walsh  <leif.walsh@gmail.com>
 
+	* Makefile.am (clean-local): added coverage cleaning target
+
 	* ar-lib: add ar-lib for darwin
 
 	* configure.ac: add -Wno-portability to suppress automake warnings

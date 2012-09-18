@@ -76,3 +76,9 @@ cov/index.html: orle.info
 	genhtml -p $(abs_srcdir) -o $(dir $@) $<
 coverage: cov/index.html
 .PHONY: coverage
+clean-local:
+	$(RM) -r cov
+	$(RM) *.info
+	$(RM) orle/*.gcda orle/*.gcno
+	$(RM) tests/encoder/*.gcda tests/encoder/*.gcno
+	$(RM) tests/io/*.gcda tests/io/*.gcno
