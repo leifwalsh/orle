@@ -25,7 +25,7 @@ dnl SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 AC_INIT([orle], [0.0.4], [leif.walsh@gmail.com], [orle], [http://github.com/adlaiff6/orle])
 AC_PREREQ([2.59])
-AM_INIT_AUTOMAKE([foreign color-tests])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign color-tests])
 AM_SILENT_RULES([yes])
 AC_CONFIG_HEADERS([config.h orleconfig.h])
 AC_CONFIG_MACRO_DIR([m4])

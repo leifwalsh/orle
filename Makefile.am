@@ -27,8 +27,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 AM_CPPFLAGS = -D_FORTIFY_SOURCE=2 -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -D_ISO_C11_SOURCE -D_FILE_OFFSET_BITS=64
-AM_CFLAGS = -Wall -Werror -Wextra -std=c11
-AM_LDFLAGS = -std=c11
+AM_CFLAGS = -Wall -Werror -Wextra
 
 lib_LTLIBRARIES = liborle-@ORLE_API_VERSION@.la
 liborle_@ORLE_API_VERSION@_la_SOURCES = orle/orle.c orle/orle-io.c orle/orle-debug.c

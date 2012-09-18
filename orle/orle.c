@@ -35,7 +35,7 @@
 #include "orle-debug.h"
 
 size_t orle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
-                        unsigned char const * const src, size_t srclen) {
+                         unsigned char const * const src, size_t srclen) {
     DBG("enter\n");
     assert(dstlen);
     assert(*dstlen >= srclen);
@@ -45,7 +45,6 @@ size_t orle_encode_bytes(unsigned char * const dst, size_t * const dstlen,
     int errsv = errno;
 
 #define ENSURE_SPACE(count) do {                                        \
-        assert(dstidx + (count) <= *dstlen); \
         if (dstidx + (count) > *dstlen) {                               \
             DBG("need at least %zu bytes in dst to continue\n", dstidx + (count)); \
             errsv = ENOBUFS;                                            \
@@ -110,7 +109,7 @@ cleanup:
 }
 
 size_t orle_decode_bytes(unsigned char * const dst, size_t * const dstlen,
-                        unsigned char const * const src, size_t srclen) {
+                         unsigned char const * const src, size_t srclen) {
     DBG("enter\n");
     assert(dstlen);
     assert(*dstlen >= srclen);
