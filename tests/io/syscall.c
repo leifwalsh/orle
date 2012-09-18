@@ -102,28 +102,33 @@ enum badness {
 
 void badenc(enum badness encbad, enum badness srcbad) {
     int r;
-    int src, enc;
+    // gcc doesn't understand that the switch statements are ok
+    int src = -1, enc = -1;
 
     switch (srcbad) {
     case FD_IS_OK:
         src = open("/tmp/orle-io-syscall.src", O_RDONLY);
+        expect(src >= 0);
         break;
     case FD_IS_BULLSHIT:
         src = 1000;
         break;
     case FD_IS_WRONGMODE:
         src = open("/tmp/orle-io-syscall.src", O_WRONLY);
+        expect(src >= 0);
         break;
     }
     switch (encbad) {
     case FD_IS_OK:
         enc = open("/tmp/orle-io-syscall.enc", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        expect(enc >= 0);
         break;
     case FD_IS_BULLSHIT:
         enc = 1001;
         break;
     case FD_IS_WRONGMODE:
         enc = open("/tmp/orle-io-syscall.enc", O_RDONLY);
+        expect(enc >= 0);
         break;
     }
 
@@ -137,28 +142,32 @@ void badenc(enum badness encbad, enum badness srcbad) {
 
 void baddec(enum badness decbad, enum badness encbad) {
     int r;
-    int enc, dec;
+    int enc = -1, dec = -1;
 
     switch (encbad) {
     case FD_IS_OK:
         enc = open("/tmp/orle-io-syscall.enc", O_RDONLY);
+        expect(enc >= 0);
         break;
     case FD_IS_BULLSHIT:
         enc = 1000;
         break;
     case FD_IS_WRONGMODE:
         enc = open("/tmp/orle-io-syscall.enc", O_WRONLY);
+        expect(enc >= 0);
         break;
     }
     switch (decbad) {
     case FD_IS_OK:
         dec = open("/tmp/orle-io-syscall.dec", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        expect(dec >= 0);
         break;
     case FD_IS_BULLSHIT:
         dec = 1001;
         break;
     case FD_IS_WRONGMODE:
         dec = open("/tmp/orle-io-syscall.dec", O_RDONLY);
+        expect(dec >= 0);
         break;
     }
 

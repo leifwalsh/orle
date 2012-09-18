@@ -1,3 +1,8 @@
+2012-09-17  Leif Walsh  <leif.walsh@gmail.com>
+
+	* tests/io/syscall.c (badenc): initialize src, enc because some
+	compilers can't figure out the switch statements
+
 2012-09-12  Leif Walsh  <leif.walsh@gmail.com>
 
 	* tests/io/syscall.c (main): add syscall test, also checks
